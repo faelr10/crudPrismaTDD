@@ -9,6 +9,7 @@
     "dev": "ts-node-dev --exit-child src/server.ts"
   },
   "dependencies": {
+    "@prisma/client": "3.9.1",
     "express": "^4.17.2"
   },
   "devDependencies": {
