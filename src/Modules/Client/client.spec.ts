@@ -1,13 +1,19 @@
 import { prismaMock } from './../../database/singleton';
 import prisma from '../../database/client';
 import { Client } from '@prisma/client';
-
+import { Request, Response } from 'express';
 
 interface CreateUser {
     id?: string
     name: string
     cpf: string,
     email: string
+}
+
+class ClientController{
+    async create(req:Request,res:Response):Promise<void>{
+
+    }
 }
 
 class ClientService {
@@ -63,6 +69,10 @@ describe('test client service', () => {
     })
     afterEach(() => {
         jest.clearAllMocks()
+    })
+
+    it('should validate field e-mail in controller',async()=>{
+        
     })
 
     it('test create service client', async () => {
