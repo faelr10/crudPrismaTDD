@@ -11,7 +11,7 @@ interface CreateUser {
 }
 
 export class ClientRepository implements IClientRepository{
-    
+
     async create(data: CreateUser): Promise<Client|Error> {
         const newUser = await prisma.client.create({ data })
         return newUser
@@ -20,6 +20,7 @@ export class ClientRepository implements IClientRepository{
     async getByClient(value: string, key?: string): Promise<Client | Error> {
 
         let result
+        
         if (key === 'email') {
             result = await prisma.client.findUnique({ where: { email: value } })
         } else if (key === 'cpf') {

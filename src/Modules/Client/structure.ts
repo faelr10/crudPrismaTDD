@@ -18,4 +18,5 @@ export interface IClientService{
 
 export interface IClientRepository{
     create(data:ICreateUser):Promise<Client|Error>
+    getByClient(value:string,key?:string):Promise<Client|Error>
 }
