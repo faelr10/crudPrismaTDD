@@ -1,4 +1,5 @@
 import { ClientRepository } from "./ClientRepository";
+import { IClientService } from "./structure";
 
 
 interface CreateUser {
@@ -8,8 +9,10 @@ interface CreateUser {
     email: string
 }
 
-export class ClientService {
+export class ClientService implements IClientService {
+
     constructor(private clientRepository: ClientRepository) { }
+    
     async create(data: CreateUser): Promise<object> {
         const verifiedCPF = await this.clientRepository.getByClient(data.cpf, 'cpf');
 

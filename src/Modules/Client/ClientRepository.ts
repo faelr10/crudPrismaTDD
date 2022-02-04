@@ -1,5 +1,6 @@
 import prisma from '../../database/client';
 import { Client } from '@prisma/client';
+import { IClientRepository } from './structure';
 
 
 interface CreateUser {
@@ -9,8 +10,9 @@ interface CreateUser {
     email: string
 }
 
-export class ClientRepository {
-    async create(data: CreateUser): Promise<object> {
+export class ClientRepository implements IClientRepository{
+    
+    async create(data: CreateUser): Promise<Client|Error> {
         const newUser = await prisma.client.create({ data })
         return newUser
     };
