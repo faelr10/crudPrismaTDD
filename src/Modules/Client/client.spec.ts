@@ -1,5 +1,6 @@
 import { prismaMock } from './../../database/singleton';
 import prisma from '../../database/client';
+import { Client } from '@prisma/client';
 
 
 interface CreateUser {
@@ -12,15 +13,39 @@ interface CreateUser {
 class ClientService {
     constructor(private clientRepository: ClientRepository) { }
     async create(data: CreateUser): Promise<object> {
+        const verifiedCPF = await this.clientRepository.getByClient(data.cpf, 'cpf');
+
+        if(verifiedCPF) {
+            return { message: `client alredy exist`}
+        }
         const result = await this.clientRepository.create(data)
         return result
-    }
+    };
 }
 
 class ClientRepository {
-    async create(data: CreateUser): Promise<object> {
+    async create(data: CreateUser):Promise<object> {
         const newUser = await prisma.client.create({ data })
         return newUser
+    };
+
+    async getByClient(value: string, key?: string):Promise<Client| Error>{
+        let result
+
+        if(key === 'email'){
+            result = await prisma.client.findUnique({where: {email: value}})
+
+        }else if(key === 'cpf'){
+            result = await prisma.client.findUnique({where: {cpf: value}})
+
+        }else {
+            result = await prisma.client.findUnique({where: {id: value}})
+        }
+
+        if(!result){
+            return new Error('Usuario não encontrado.')
+        }
+        return result
     }
 }
 
@@ -36,6 +61,10 @@ const createClientRepository = () => {
 
 describe('test client service', () => {
 
+    beforeEach(() => {
+        jest.clearAllMocks()
+    })
+
     it('test create service client', async () => {
         const sut = createSut()
         const user = {
@@ -46,5 +75,22 @@ describe('test client service', () => {
         }
         prismaMock.client.create.mockResolvedValue(user)
         await expect(sut.create(user)).resolves.toHaveProperty('id')
+    });
+
+    it('should verified already exist client', async() => {
+        const sut = createSut()
+        const user = {
+            id: '2154122',
+            name: 'Adriano',
+            cpf: '12547889965',
+            email: 'Adriano@Adriano.com'
+        }
+        prismaMock.client.findUnique.mockResolvedValue(user)
+        prismaMock.client.create.mockResolvedValue(user)
+        const verified = await sut.create(user)
+
+        console.log(verified)
+        expect(verified).toEqual({message: 'client alredy exist'})
+       
     })
 })
