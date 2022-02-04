@@ -15,34 +15,31 @@ class ClientService {
     async create(data: CreateUser): Promise<object> {
         const verifiedCPF = await this.clientRepository.getByClient(data.cpf, 'cpf');
 
-        if(verifiedCPF) {
-            return { message: `client alredy exist`}
+        if (verifiedCPF instanceof Error) {
+            const result = await this.clientRepository.create(data)
+            return result
         }
-        const result = await this.clientRepository.create(data)
-        return result
+        return { message: `client alredy exist`}
     };
 }
 
 class ClientRepository {
-    async create(data: CreateUser):Promise<object> {
+    async create(data: CreateUser): Promise<object> {
         const newUser = await prisma.client.create({ data })
         return newUser
     };
 
-    async getByClient(value: string, key?: string):Promise<Client| Error>{
+    async getByClient(value: string, key?: string): Promise<Client | Error> {
+
         let result
-
-        if(key === 'email'){
-            result = await prisma.client.findUnique({where: {email: value}})
-
-        }else if(key === 'cpf'){
-            result = await prisma.client.findUnique({where: {cpf: value}})
-
-        }else {
-            result = await prisma.client.findUnique({where: {id: value}})
+        if (key === 'email') {
+            result = await prisma.client.findUnique({ where: { email: value } })
+        } else if (key === 'cpf') {
+            result = await prisma.client.findUnique({ where: { cpf: value } })
+        } else {
+            result = await prisma.client.findUnique({ where: { id: value } })
         }
-
-        if(!result){
+        if (!result) {
             return new Error('Usuario não encontrado.')
         }
         return result
@@ -64,6 +61,9 @@ describe('test client service', () => {
     beforeEach(() => {
         jest.clearAllMocks()
     })
+    afterEach(() => {
+        jest.clearAllMocks()
+    })
 
     it('test create service client', async () => {
         const sut = createSut()
@@ -77,7 +77,7 @@ describe('test client service', () => {
         await expect(sut.create(user)).resolves.toHaveProperty('id')
     });
 
-    it('should verified already exist client', async() => {
+    it('should verified already exist client', async () => {
         const sut = createSut()
         const user = {
             id: '2154122',
@@ -86,11 +86,7 @@ describe('test client service', () => {
             email: 'Adriano@Adriano.com'
         }
         prismaMock.client.findUnique.mockResolvedValue(user)
-        prismaMock.client.create.mockResolvedValue(user)
-        const verified = await sut.create(user)
+        await expect(sut.create(user)).resolves.toEqual({ message: 'client alredy exist' })
 
-        console.log(verified)
-        expect(verified).toEqual({message: 'client alredy exist'})
-       
     })
 })
