@@ -73,7 +73,12 @@ describe('test client service', () => {
 
     it('should validate field e-mail in controller',async()=>{
         
+    });
+
+    it('should validate field CPF in controller', async () => {
+        
     })
+
 
     it('test create service client', async () => {
         const sut = createSut()
