@@ -12,7 +12,7 @@ interface CreateUser {
 export class ClientService implements IClientService {
 
     constructor(private clientRepository: ClientRepository) { }
-    
+     
     async create(data: CreateUser): Promise<object> {
         const verifiedCPF = await this.clientRepository.getByClient(data.cpf, 'cpf');
 
