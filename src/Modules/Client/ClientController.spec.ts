@@ -10,18 +10,18 @@ const validateSut = () => {
 
 describe.only('test for ClientController', () => {
 
-    // it('should validate cpf is valid', async () => {
-    //     const sut = validateSut()
-    //     Request.body = {
-    //         "name": "Rafael",
-    //         "cpf": '120557646089999',
-    //         "email": "rafaelv.boscato@hotmail.com"
-    //     }
-    //     const result = await sut.create(Request,Response)
-    //     expect(result).toEqual({message:"CPF invalido"})
-    // })
+    it('should validate cpf is valid', async () => {
+        const client = await request(app)
+        .post('/create')
+        .send({
+            name:'Rafael',
+            cpf:'1205576460855',
+            email:'rafaelv.boscato@hotmail.com'
+        })
+        expect(client.body.message).toBe('CPF inválido!')
+    })
 
-    it.only('should validate email is valid', async () => {
+    it('should validate email is valid', async () => {
         
         const user = await request(app)
         .post('/create')
@@ -30,7 +30,7 @@ describe.only('test for ClientController', () => {
             cpf:"12055764608",
             email:'rafaelv.boscatohotmail.com'
         })
-        expect(user.body.message).toBe('email inválido')
+        expect(user.body.message).toBe('Email inválido')
 
     })
 
