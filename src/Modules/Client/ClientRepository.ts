@@ -17,7 +17,7 @@ export class ClientRepository implements IClientRepository{
         return newUser
     };
 
-    async getByClient(value: string, key?: string): Promise<Client | Error> {
+    async getByClient(value: string, key?: string): Promise<Client | boolean> {
 
         let result
         
@@ -28,9 +28,7 @@ export class ClientRepository implements IClientRepository{
         } else {
             result = await prisma.client.findUnique({ where: { id: value } })
         }
-        if (!result) {
-            return new Error('Usuario não encontrado.')
-        }
-        return result
+        
+        return false
     }
 }

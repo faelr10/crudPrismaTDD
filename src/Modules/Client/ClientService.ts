@@ -14,12 +14,19 @@ export class ClientService implements IClientService {
     constructor(private clientRepository: ClientRepository) { }
      
     async create(data: CreateUser): Promise<object> {
-        const verifiedCPF = await this.clientRepository.getByClient(data.cpf, 'cpf');
+        
+        const verifiedCPF = await this.clientRepository.getByClient(data.cpf,'cpf')
+        const verifiedEmail = await this.clientRepository.getByClient(data.email,'email')
 
-        if (verifiedCPF instanceof Error) {
-            const result = await this.clientRepository.create(data)
-            return result
+        if(verifiedCPF){
+            return {message:'CPF already exist!'}
+        }else if(verifiedEmail){
+            return {message:'Email already exist!'}
         }
-        return { message: `client alredy exist` }
+        else{
+            const client = this.clientRepository.create(data)
+            return client
+        }
+
     };
 }
