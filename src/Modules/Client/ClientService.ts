@@ -27,6 +27,10 @@ export class ClientService implements IClientService {
             const client = this.clientRepository.create(data)
             return client
         }
-
     };
+
+    async findAll():Promise<Array<object>|void>{
+        const listClient = await this.clientRepository.findAll()
+        return listClient
+    }
 }

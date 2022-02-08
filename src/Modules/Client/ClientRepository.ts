@@ -31,4 +31,9 @@ export class ClientRepository implements IClientRepository{
         
         return false
     }
+
+    async findAll():Promise<Array<object>|void>{
+        const listClient = await prisma.client.findMany()
+        return listClient
+    }
 }
